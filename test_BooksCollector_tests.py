@@ -49,10 +49,10 @@ class TestBooksCollector:
         result = collector.get_books_with_specific_genre(genre)
         assert result == [book_name]
 
-    # get_books_genre() - проверка возврата словаря жанров (пустого сразу после __init__)
-    # использую фикстуру collector
-    def test_get_books_genre_initial_is_empty(self, collector):
-        assert collector.get_books_genre() == {}
+    # get_books_genre() - проверка возврата словаря жанров
+    # использую фикстуру prepared_collector
+    def test_get_books_genre_returns_filled_mapping(self, prepared_collector):
+        assert prepared_collector.get_books_genre() == {"Книга A": "Мультфильмы", "Книга B": "Ужасы", "Книга C": ""}
 
     # get_books_for_children() - проверка возврата книг с жанрами из genre, не входящими в genre_age_rating
     # использую фикстуру prepared_collector
@@ -76,12 +76,11 @@ class TestBooksCollector:
         collector.add_book_in_favorites("Без жанра")
         assert collector.get_list_of_favorites_books() == ["Без жанра"]
 
-    # delete_book_from_favorites(name) - проверка удаления существующей в избранном книги
-    # использую фикстуру collector 
-    @pytest.mark.parametrize("book_name, genre", [("Книга A", "Мультфильмы"), ("Книга B", "Фантастика"), ("Книга C", "Комедии")])
-    def test_delete_book_from_favorites_removes_existing(self, collector, book_name, genre):
+# delete_book_from_favorites(name) - проверка удаления существующей в избранном книги
+    # использую фикстуру collector
+    @pytest.mark.parametrize("book_name", ["Книга A", "Книга B", "Книга C"])
+    def test_delete_book_from_favorites_removes_existing(self, collector, book_name):
         collector.add_new_book(book_name)
-        collector.set_book_genre(book_name, genre)
         collector.add_book_in_favorites(book_name)
         collector.delete_book_from_favorites(book_name)
         assert collector.get_list_of_favorites_books() == []
